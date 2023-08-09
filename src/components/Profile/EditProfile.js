@@ -17,9 +17,10 @@ const EditProfile = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(name,email,phone)
+        console.log(name, email, phone)
         const authToken = sessionStorage.getItem('ltk');
         const editDetails = {
             "name": name,
@@ -36,15 +37,18 @@ const EditProfile = () => {
             "confirm_password": confPassword
         }
         try {
-            let res = await axios.post(url, {
-                params: editDetails
-            },
-                {
-                    headers: {
-                        Authorization: `Bearer ${authToken}`
-                    }
-                })
-            console.log(res)
+            const url = `https://phpwebdevelopmentservices.com/project-react-backend/api/edit-profile?name=${name}&phone=${phone}&email=${email}`
+
+            fetch(url, {
+                headers: {
+                    'Content-Type': "multipart/form-data",
+                    'X-CSRF-TOKEN': authToken,
+                    'accept': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                method: 'POST'
+            }).then(res => res.json()).then(result => { console.log(result) })
+        
         } catch (error) {
             console.log("error", error)
         }
@@ -150,6 +154,7 @@ const EditProfile = () => {
                                                                         id="name"
                                                                         value={name}
                                                                         onChange={(e) => setName(e.target.value)}
+                                                                        required
                                                                     />
                                                                 </div>
                                                             </div>
@@ -162,6 +167,7 @@ const EditProfile = () => {
                                                                         id="email"
                                                                         value={email}
                                                                         onChange={(e) => setEmail(e.target.value)}
+                                                                        required
                                                                     />
                                                                 </div>
                                                             </div>
@@ -174,6 +180,7 @@ const EditProfile = () => {
                                                                         id="phone"
                                                                         value={phone}
                                                                         onChange={(e) => setPhone(e.target.value)}
+                                                                        required
                                                                     />
                                                                 </div>
                                                             </div>
