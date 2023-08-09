@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
 import axios from "axios";
+
 const url = "https://phpwebdevelopmentservices.com/project-react-backend/api/search-data";
+
 const Search = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [keyword, setKeyword] = useState('');
+
+    const authToken = useMemo(() => {
+        return sessionStorage.getItem('ltk')
+    }, []);
+
+    const handleSearch = (event) => {
+        if (event.target.value) {
+            setKeyword(event.target.value);
+
+            const url = 'https://phpwebdevelopmentservices.com/project-react-backend/api/common-data';
+            fetch(url, {
+                headers: {
+                    'X-CSRF-TOKEN': authToken,
+                    'Authorization': `Bearer ${authToken}`
+                },
+                method: 'POST'
+            }).then(res => res.json()).then(result => { console.log(result) })
+        }
+    }
+
     const fetchFilteredProducts = () => {
         const filterData = {
             "keyword": keyword,
@@ -50,7 +72,7 @@ const Search = () => {
                                         type="text"
                                         className="search-input"
                                         value={keyword}
-                                        onChange={(e) => setKeyword(e.target.value)} />
+                                        onChange={handleSearch} />
                                     <img src="assets/images/icon36.png" className="search_icon" />
                                 </div>
 
